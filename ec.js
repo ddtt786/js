@@ -3,7 +3,18 @@ let __id
 let __like
 let __view
 let __user
+let ___titlep
+let __likep
+let __viewp
+let __creator
 let ret
+function wait(msecs) {
+    let start = new Date().getTime();
+    let cur = start;
+    while(cur - start < msecs) {
+        cur = new Date().getTime();
+    }
+}
 const entry = {
     ds: {
         free: {
@@ -106,7 +117,7 @@ const entry = {
             my : `https://playentry.org/api/discuss/find?username=${user.username}&title=&search_title=&sort=created&rows=0&page=1&category=tips`,
             get(getr) {
                 $.ajaxSetup({ async: false });
-                $.get('https://playentry.org/api/discuss/find?category=tips', d => {
+                $.get('https://playentry.org/api/discuss/find?category=tip', d => {
                     ___title = d.data[0].title;
                     __id = d.data[0]._id;
                     __like = d.data[0].likesLength;
@@ -153,6 +164,20 @@ const entry = {
     },
     project(pj) {
         return {
+            get(getr) {
+                $.ajaxSetup({ async: false });
+                $.get(`https://playentry.org/api/project/${pj}`, d => {
+                    ___titlep = d.name;
+                    __likep = d.likeCnt;
+                    __viewp = d.visit;
+                    __creator = d.username;
+                    if(getr == "title"){ret = ___titlep}
+                    if(getr == "like"){ret = __likep}
+                    if(getr == "view"){ret = __viewp}
+                    if(getr == "creator"){ret = __creator}
+                })
+                return ret
+            },
             like() {
                 $.ajax({
                     url: `https://playentry.org/api/project/like/${pj}`,
