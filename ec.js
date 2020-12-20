@@ -8,6 +8,7 @@ let __likep
 let __viewp
 let __creator
 let ret
+
 function wait(msecs) {
     let start = new Date().getTime();
     let cur = start;
@@ -15,12 +16,30 @@ function wait(msecs) {
         cur = new Date().getTime();
     }
 }
+
+$.ajaxSetup({ async: false });
+
 const entry = {
     ds: {
         free: {
             my : `https://playentry.org/api/discuss/find?username=${user.username}&title=&search_title=&sort=created&rows=0&page=1&category=free`,
+            sel(sel) {
+                return {
+                    comment(com) {
+                        $.ajax({
+                            url: `https://playentry.org/api/comment`,
+                            type: "POST",
+                            data: {
+                                targetSubject: "discuss", 
+                                targetType: "individual",
+                                content: com,
+                                target: sel,
+                            }
+                        })
+                    }
+                }
+            },
             get(getr) {
-                $.ajaxSetup({ async: false });
                 $.get('https://playentry.org/api/discuss/find?category=free', d => {
                     ___title = d.data[0].title;
                     __id = d.data[0]._id;
@@ -67,8 +86,23 @@ const entry = {
         },
         qna: {
             my : `https://playentry.org/api/discuss/find?username=${user.username}&title=&search_title=&sort=created&rows=0&page=1&category=qna`,
+            sel(sel) {
+                return {
+                    comment(com) {
+                        $.ajax({
+                            url: `https://playentry.org/api/comment`,
+                            type: "POST",
+                            data: {
+                                targetSubject: "discuss", 
+                                targetType: "individual",
+                                content: com,
+                                target: sel,
+                            }
+                        })
+                    }
+                }
+            },
             get(getr) {
-                $.ajaxSetup({ async: false });
                 $.get('https://playentry.org/api/discuss/find?category=qna', d => {
                     ___title = d.data[0].title;
                     __id = d.data[0]._id;
@@ -115,8 +149,23 @@ const entry = {
         },
         tip: {
             my : `https://playentry.org/api/discuss/find?username=${user.username}&title=&search_title=&sort=created&rows=0&page=1&category=tips`,
+            sel(sel) {
+                return {
+                    comment(com) {
+                        $.ajax({
+                            url: `https://playentry.org/api/comment`,
+                            type: "POST",
+                            data: {
+                                targetSubject: "discuss", 
+                                targetType: "individual",
+                                content: com,
+                                target: sel,
+                            }
+                        })
+                    }
+                }
+            },
             get(getr) {
-                $.ajaxSetup({ async: false });
                 $.get('https://playentry.org/api/discuss/find?category=tip', d => {
                     ___title = d.data[0].title;
                     __id = d.data[0]._id;
@@ -165,7 +214,6 @@ const entry = {
     project(pj) {
         return {
             get(getr) {
-                $.ajaxSetup({ async: false });
                 $.get(`https://playentry.org/api/project/${pj}`, d => {
                     ___titlep = d.name;
                     __likep = d.likeCnt;
@@ -216,7 +264,19 @@ const entry = {
                         }
                     })
                 }
-            }
+            },
+            comment(com) {
+                $.ajax({
+                    url: `https://playentry.org/api/comment`,
+                    type: "POST",
+                    data: {
+                        targetSubject: "project", 
+                        targetType: "individual",
+                        content: com,
+                        target: pj,
+                    }
+                })
+            },
         }
     }
 }
